@@ -1,0 +1,71 @@
+%%
+%012358411 - Problem 3 Part A
+%Lam, Richard 
+
+clear; clc; close all; % Clears the workspace and command window.
+%%
+t0 = 0;
+ti = 0.01;
+tf = 10;
+dt = 1E-2;
+
+Kcr = 6
+Pcr = 4.44
+
+Kp = 0.6*Kcr; 
+Ti = 0.5*Pcr;
+Td = 0.125*Pcr;
+
+Ki = Kp/Ti;
+Kd = Kp*Td;
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Call Simulink Block Diagram%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+open_system('P3.slx')
+ansRAMP = sim('P3.slx');
+
+%%
+%%%%%%%%%%%%%%%%%%%%%
+%Plot Control System%
+%%%%%%%%%%%%%%%%%%%%%
+hold all % This is so each plot is actually gets plotted instead of overriding each other. 
+
+figure (1);
+plot(ansRAMP.Disturbance(:,1),ansRAMP.Disturbance(:,2));
+plot(ansRAMP.Response_PID(:,1),ansRAMP.Response_PID(:,2));
+plot(ansRAMP.STEP(:,1),ansRAMP.STEP(:,2));
+title('PID Controller Design');
+xlabel('Time (s)');
+ylabel('Amplitude');
+legend('Open loop Response', 'PID Response', 'Step Function');
+
+hold on;
+figure (2); 
+plot(ansRAMP.Disturbance(:,1),ansRAMP.Disturbance(:,2));
+title('Open Looped Response');
+xlabel('Time (s)');
+ylabel('Amplitude');
+legend('Open loop Response','Step Function');
+
+
+
+%%
+%%%%%%%%%%%%%%
+%Observations%
+%%%%%%%%%%%%%%
+% A) The open loop response is unstable as it does not converge to a
+% specific value and does not reach the unit step of 1.
+%
+% B)
+% The Ziegler-Nichols' 2nd method is aboe to improove and track the given
+% system.
+% For design steps I calculated the values for Kcr and Pcr. Then that was
+% used to calculate Kp, Ti, and Td in MATLAB.
+%
+% For the observations, the system reaches a steady state response at around
+% 10 seconds. The open looped system does not track the step function.
+%
+% In conclusion, the response with the PID controller gives us the ability
+% to track and make the system controllable. More sepcifically,
